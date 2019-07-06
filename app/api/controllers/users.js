@@ -24,6 +24,7 @@ exports.user_signup = (req, res, next) => {
                         const user = new User({
                             _id: new mongoose.Types.ObjectId(),
                             email: req.body.email,
+                            name: req.body.name,
                             password: hash
                         });
                         user
@@ -98,6 +99,43 @@ exports.user_delete = (req, res, next) => {
         .then(result => {
             res.status(200).json({
                 message: "User deleted"
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.user_get = (req, res, next) => {
+    User.findOne({
+            _id: req.userData.userId
+        })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                username: result.name,
+                email: result.email,
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.user_logout = (req, res, next) => {
+    User.find({
+            _id: req.userData.userId
+        })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "User loggedout "
             });
         })
         .catch(err => {
